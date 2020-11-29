@@ -1,20 +1,7 @@
-import React from 'react'
 import styled from 'styled-components'
 
-export const ThemeColors = ({ color, forwardedRef, colors, index }) => {
- // const colorIndex = Object.keys(colors).findIndex(colorName => colors[colorName] === color)
-  // console.log(forwardedRef)
-
-  return (
-    <StyledThemeColor color={color} ref={forwardedRef}/>
-  )
-}
 export const StyledThemeColor = styled.div.attrs({ className: 'load' })`
-  &.load {
-    opacity: 1;
-  }
-  transition: opacity 1s ease-in;
-  
+  transition: opacity 1s both;
   cursor: pointer;
   position: relative;
   left: 40%;
@@ -41,16 +28,16 @@ export const StyledThemeColor = styled.div.attrs({ className: 'load' })`
     animation-delay: 0s;
   }
   &:nth-child(4) {
-    animation-delay: .3s; 
+    animation-delay: .2s; 
   }
   &:nth-child(5) {
-    animation-delay: .6s;
+    animation-delay: .4s;
   }
   &:nth-child(6) {
-    animation-delay: .9s;
+    animation-delay: .6s;
   }
   &:nth-child(7) {
-    animation-delay: 1.2s;
+    animation-delay: .8s;
   }
 `
 
