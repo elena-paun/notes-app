@@ -1,16 +1,30 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useCallback } from 'react'
 
+import colors from './utils/colors'
 import { StyledBackground, Todo, Container, AppBar } from './styled-components/Background'
 import { AddNote } from './styled-components/AddNoteButton'
-import { StyledThemeColor } from './ThemeColors'
+import { StyledThemeColor, ColorContainer } from './styled-components/ThemeColors'
+
+import { Note } from './Note'
 export const Background = () => {
   const [wobble, setWobble] = useState(0)
   const [showColors, setShowColors] = useState(false)
-  const onClick = () => {
+  const [startColors, setStartColors] = useState(false);
+  const [multiplyNote, setMultiplyNote] = useState(0)
+  const [noteColor, setNoteColor] = useState([])
+  const [notesArray, setNotesArray] = useState([])
+
+  const onClick = useCallback(() => {
     setWobble(1)
     setShowColors(!showColors)
-  }
-  const colors = ['#ffc973', '#ff9b71', '#b692fe', '#01d4ff', '#e4ee90']
+    setStartColors(true)
+  }, [showColors])
+  const createNote = useCallback((color) => {
+    setNoteColor(oldColor => [...oldColor, color])
+    setMultiplyNote(multiplyNote => multiplyNote + 1)
+  }, [])
+  const notes = []
+ console.log(noteColor)
   
   return (
     <Container id='container'>
@@ -23,20 +37,40 @@ export const Background = () => {
           rotate='rotate'
           onClick={onClick}
           wobble={wobble}
-          onAnimationEnd={() => setWobble(0)}
-          size='3em' />
-        {showColors &&
-            colors.map((color, idx) => 
-                <StyledThemeColor
-                  color={color}
-                  colors={colors}
-                  key={idx}
-                  index={idx}
-                />
-        )}
+          onAnimationEnd={() => {
+            setWobble(0)
+          }}
+          size='3em'
+        />
+            <ColorContainer>
+              {startColors &&
+                colors.map((color, idx) =>
+                  <StyledThemeColor
+                    color={color}
+                    colors={colors}
+                    key={idx}
+                    index={idx}
+                    showColors={showColors}
+                    onClick={() => createNote(color)}
+                  />
+              )}
+            </ColorContainer>
       </AppBar>
-        <StyledBackground>
+      <StyledBackground>
+        {
+          [...Array(multiplyNote)].map((_, id) => {
+            notes.push(id)
+            console.log({notes})
+            return (
+              <Note
+              key={id}
+              color={noteColor[id]}
+              id={id}
+              notes={notes}
+            />)
+          }
+        )}
         </StyledBackground>
-      </Container>
+    </Container>
     )
 }
