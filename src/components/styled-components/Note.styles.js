@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-
-export const TextArea = styled.textarea`
+import { Field } from 'formik'
+export const TextArea = styled(Field)`
   background-color: ${props => props.color};
   height: 180px;
   width: 180px;
