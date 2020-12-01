@@ -77,12 +77,14 @@ export const Background = () => {
         {list.map((element, id) => (
           data.map((note) => (
             <Formik
-              initialValues={{note: note.content}}
-              onSubmit={(values, { setSubmitting }) => {
-                if (values !== note.content) {
-                  setSubmitting(false)
-                }
-              }}>
+              initialValues={{ note: note.content }}
+               onSubmit={(values, { setSubmitting }) => {
+        setTimeout(() => {
+        //  alert(JSON.stringify(values, null, 2));
+          setSubmitting(false);
+        }, 400);
+      }}
+             >
              <Note
                 key={note.id}
                 color={element.color}

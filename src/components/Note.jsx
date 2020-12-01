@@ -15,22 +15,24 @@ export const Note = ({ color, id, notes, setList, list, noteSaved }) => {
   console.log(noteSaved)
   return (
     <NoteContainer color={color}>
-     
-          <Form>
+      {/* {({ isSubmitting }) => ( */}
+         <Form >
             <TextArea color={color} placeholder='Write something here...' name='note'/>
             <Autosave debounceMs={1000} />
           </Form>
-        <EditButton style={() => darkenColor(color, -50)}/>
+     {/* )} */}
+        
+        {/* <EditButton style={() => darkenColor(color, -50)}/> */}
         <DeleteButton onClick={onDelete} style={() => darkenColor(color, -50)}/>
-        {showModal &&
-          <DeleteModal
-            color={color}
-            setShowModal={setShowModal}
-            id={id}
-            notes={notes}
-            setList={setList}
-            list={list}
-          />}
+      {showModal &&
+        <DeleteModal
+          color={color}
+          setShowModal={setShowModal}
+          id={id}
+          notes={notes}
+          setList={setList}
+          list={list}
+        />}
       </NoteContainer>
   )
 }

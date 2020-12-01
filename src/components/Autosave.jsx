@@ -11,7 +11,10 @@ export const Autosave = ({ debounceMs }) => {
       return setIsSaved(true)
     }, debounceMs)
 
-  useEffect(() => debouncedSubmit, [debouncedSubmit, formik.values])
+  useEffect(() =>
+    debouncedSubmit,
+    [debouncedSubmit, formik.values]
+  )
 
   return (
     <ChangesSaved>
