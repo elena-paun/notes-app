@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { RiEditCircleFill } from 'react-icons/ri'
 
 export const EditButton = styled(RiEditCircleFill)`
+  color: ${props => props.style};
   height: 30px;
   width: 30px;
   position: absolute;
