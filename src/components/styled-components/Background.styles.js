@@ -15,10 +15,11 @@ export const AppBar = styled.div`
   border-right: 0.5px solid #e6eaf6;
 `
 export const StyledBackground = styled.div`
+  padding: 15px;
   position: relative;
   background-color: white;
   background-size: cover;
-  height: 700px;
+  height: 670px;
   width: 85%;
   border-radius: 0 30px 30px 0;
 `
