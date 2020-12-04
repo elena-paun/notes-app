@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import axios from 'axios'
 import { Formik } from 'formik';
 
@@ -7,29 +7,67 @@ import colors from './utils/colors'
 import { StyledBackground, Todo, Container, AppBar } from './styled-components/Background.styles'
 import { AddNote } from './styled-components/AddNoteButton.styles.'
 import { StyledThemeColor, ColorContainer } from './styled-components/ThemeColors.styles'
-import { useToDos } from './useFetchTodos'
 import { Note } from './Note'
-
+import { useToDos, useCreateTodo, useEditTodo } from './useFetchTodos'
 export const Background = () => {
   const [wobble, setWobble] = useState(0)
   const [showColors, setShowColors] = useState(false)
   const [startColors, setStartColors] = useState(false);
-  const [list, setList] = useState([])
+  // const [getNote, setGetNote] = useState([])
+   const [sendNote, setSendNote] = useState([])
+  // const [ dataToBeSent, setDataToBeSent] = useState([])
+   const [allNotes, setAllNotes] = useState([])
+  const id = Math.floor(Math.random() * 100)
+  const [todo, setTodo] = useState(null)
+  const [content, setContent] = useState('')
+  const { data } = useToDos()
+  //const [newNote, setNewNote] = useState([{}])
+  const { editTodo } = useEditTodo(id)
+  const { createTodo } = useCreateTodo(id)
 
-  const { data, mutatePostTodo } = useToDos()
-  console.log(data)
- // console.log(mutatePostTodo)
+  useEffect(() => {
+    setAllNotes(data)
+  }, [data])
+ 
+  //const {id} = data
+ // const timestamp = new Date().toString();
+ // console.log(dataToBeSent)
   const onClick = useCallback(() => {
     setWobble(1)
     setShowColors(!showColors)
     setStartColors(true)
   }, [showColors])
+console.log(data)
+const saveNote = async (e) => {
+  setContent(e.target.value)
+  const note={"content":content}
+  //editTodo(sendNote)
+ try {
+  await editTodo(note)
+ } catch(error) {
+   console.log(error)
+ }
+}
+  const createNote = useCallback(async (color) => {
+     const myDate = new Date('0001-01-01T00:00:00Z');
 
-  const createNote = useCallback((color) => {
-    setList(notes => [...notes, {color, id:  Math.floor(Math.random() * 100) }])
-  }, [])
+    // setToDoID(id => id + 1)
+     const note = {
+      "color":color, 
+      "id": id, 
+      "name": '', 
+      "content": '', 
+      "creationDate": myDate, 
+    //  lastEditDate: ''
+    }
+     setAllNotes(todo => [...todo, note])
 
-
+    try {
+      await createTodo(note)
+    } catch(error) {
+      console.log(error)
+    }
+  },[createTodo, id])
 
 //   axios.get('https://localhost:5001/api/getAll', options)
 //   .then((response) => {
@@ -74,28 +112,25 @@ export const Background = () => {
             </ColorContainer>
       </AppBar>
       <StyledBackground>
-        {list.map((element, id) => (
-          data.map((note) => (
-            <Formik
-              initialValues={{ note: note.content }}
-               onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-        //  alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
-      }}
-             >
+        {allNotes?.map((note, id) => (
              <Note
-                key={note.id}
-                color={element.color}
+                key={id}
+                color={note.color || '#ffc973'}
                 id={note.id}
-                list={list}
-                setList={setList}
-                noteSaved={note.content}
-              />
-            </Formik>
-          ))
-             
+                content={content}
+                setContent={setContent}
+                saveNote={saveNote}
+                //notes={getNote}
+                //sendNote={sendNote}
+                // oldContent={note.content || 'aaa'}
+                setAllNotes={setAllNotes}
+                allNotes={allNotes}
+                //newContent={content}
+                //creationDate={note.creationDate}
+                note={note}
+               // handleValue={handleValue}
+                 //editTodo={editTodo}
+              />        
           )
         )}
         </StyledBackground>

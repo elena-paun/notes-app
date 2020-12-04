@@ -1,11 +1,13 @@
 import React from 'react'
 import {Delete, Text, Buttons, DeleteNote, CheckButton} from './styled-components/DeleteModal.styles'
 import { darkenColor } from './utils/darkenColor'
-export const DeleteModal = ({ color, setShowModal, id, notes, setList, list }) => {
-  
+import { useDeleteTodo } from './useFetchTodos'
+export const DeleteModal = ({ setAllNotes, color, setShowModal, id, notes, setList, list }) => {
+  const { deleteTodo } = useDeleteTodo(id)
   const deleteNote = () => {
-    const deleteN = list.filter(elem =>  elem.id !== id )
-    setList(deleteN)
+    deleteTodo(id)
+   // const deleteN = list.filter(elem =>  elem.id !== id )
+   // setList(deleteN)
   }
   return (
     <Delete color={color} id='modalContainer'>
