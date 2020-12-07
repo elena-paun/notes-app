@@ -35,7 +35,6 @@ export const Note = ({
    const onDelete = () => {
     setShowModal(true)
   }
-   console.log(id)
   // const saveNote = async (e) => {
   //      setContent(e.target.value)
   //      const note={"content":content}

@@ -10,6 +10,9 @@ import { StyledThemeColor, ColorContainer } from './styled-components/ThemeColor
 import { Note } from './Note'
 import { useToDos, useCreateTodo, useEditTodo } from './useFetchTodos'
 export const Background = () => {
+  const { data } = useToDos()
+
+
   const [wobble, setWobble] = useState(0)
   const [showColors, setShowColors] = useState(false)
   const [startColors, setStartColors] = useState(false);
@@ -17,18 +20,21 @@ export const Background = () => {
    const [sendNote, setSendNote] = useState([])
   // const [ dataToBeSent, setDataToBeSent] = useState([])
    const [allNotes, setAllNotes] = useState([])
-  const id = Math.floor(Math.random() * 100)
+ // const id = Math.floor(Math.random() * 100)
+  const [noteID, setNoteID] = useState(0)
   const [todo, setTodo] = useState(null)
   const [content, setContent] = useState('')
-  const { data } = useToDos()
   //const [newNote, setNewNote] = useState([{}])
-  const { editTodo } = useEditTodo(id)
-  const { createTodo } = useCreateTodo(id)
+  const { editTodo } = useEditTodo(noteID)
+  const { createTodo } = useCreateTodo(noteID)
+
+   
 
   useEffect(() => {
+ 
     setAllNotes(data)
   }, [data])
- 
+  console.log(data)
   //const {id} = data
  // const timestamp = new Date().toString();
  // console.log(dataToBeSent)
@@ -37,8 +43,9 @@ export const Background = () => {
     setShowColors(!showColors)
     setStartColors(true)
   }, [showColors])
-console.log(data)
-const saveNote = async (e) => {
+
+  const saveNote = async (e) => {
+  console.log(e)
   setContent(e.target.value)
   const note={"content":content}
   //editTodo(sendNote)
@@ -50,11 +57,11 @@ const saveNote = async (e) => {
 }
   const createNote = useCallback(async (color) => {
      const myDate = new Date('0001-01-01T00:00:00Z');
-
+    setNoteID(id => id + 1)
     // setToDoID(id => id + 1)
      const note = {
       "color":color, 
-      "id": id, 
+      "id": noteID, 
       "name": '', 
       "content": '', 
       "creationDate": myDate, 
@@ -67,8 +74,13 @@ const saveNote = async (e) => {
     } catch(error) {
       console.log(error)
     }
-  },[createTodo, id])
+  }, [createTodo, noteID])
+  
 
+  if (data) {
+      const lastObj = data.pop()
+      setNoteID(lastObj.id)
+  }
 //   axios.get('https://localhost:5001/api/getAll', options)
 //   .then((response) => {
 //     console.log(response)
