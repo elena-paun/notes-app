@@ -2,10 +2,11 @@ import React from 'react'
 import axios from 'axios'
 import { useQuery, useMutation, queryCache } from 'react-query'
 import api from './skeleton'
+import get from 'lodash/get';
 
 export const useToDos = (id) => {
  // const { id } = payload
-  const { isLoading, error, data } = useQuery('todos', async () => {
+  const { isLoading, error, data: response } = useQuery('todos', async () => {
       const options = {
         headers: {
           'Access-Control-Allow-Origin': '*'
@@ -15,23 +16,23 @@ export const useToDos = (id) => {
     //const json = await data.json()
     //console.log(json)
     console.log(data)
-    
-    return data
+    const lastId = data ? data[data.length - 1].id : 1
+    console.log(lastId)
+    return { data, lastId }
   })
   return ({
-    data,
+    response,
+    // lastId: get(response, 'data.lastId') ? response.data.lastId : [],
+    isLoading
   })
 } 
-//   axios.get('https://localhost:5001/api/getAll', options)
-//   .then((response) => {
-//     console.log(response)
-//   })
+
 export const useEditTodo = (todoId) => {
   const [mutate, {isLoading: isEditing}] = useMutation(
-    async (data) => axios.put('https://localhost:5001/api/edit', data),
+    async (data) => axios.patch(`https://localhost:5001/api/edit/${todoId}`, data),
     {
       onSuccess: (response) => {
-        console.log(response.data)
+        console.log(response)
         // console.log(response)
         // const { id, content } = response.data
         // console.log(id)
