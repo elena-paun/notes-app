@@ -8,32 +8,17 @@ import { useToDos, useCreateTodo, useEditTodo } from './useFetchTodos'
 export const Background = () => {
   
   const { response, isLoading } = useToDos()
-
-  const [initialState, setInitialState] = useState()
-
   const [wobble, setWobble] = useState(0)
   const [showColors, setShowColors] = useState(false)
   const [startColors, setStartColors] = useState(false);
    const [allNotes, setAllNotes] = useState([])
-  const [noteID, setNoteID] = useState(initialState)
-  // const [content, setContent] = useState('')
-  const { createTodo } = useCreateTodo(noteID)
-  const { editTodo } = useEditTodo(noteID)
+   const [id, setID] = useState()
+  const { createTodo } = useCreateTodo()
 
-  // useEffect(() => {
-  //   crea
-  // }, [])
-
-  useEffect(() => {
-    if (response) {
-      setInitialState(response.lastId)
-    }
-  }, [response])
   useEffect(() => {
  
     if (response) {
-console.log(response.data)
-
+      console.log(response.data)
       setAllNotes(response.data)
     }
   }, [response])
@@ -43,39 +28,28 @@ console.log(response.data)
     setShowColors(!showColors)
     setStartColors(true)
   }, [showColors])
-console.log(noteID)
- 
-// const saveNote = async (e) => {
-//   setContent(e.target.value)
-//   console.log(content)
-//   const note = { "content": content }
-//   try {
-//     await editTodo(note)
-//   } catch(error) {
-//     console.log(error)
-//   }
-// }
-// console.log(content)
 
   const createNote = useCallback(async (color) => {
-    console.log(initialState)
-    setNoteID(initialState + 1)
-
-    const note = {
-      "color":color, 
-      "id": noteID, 
-      "name": `todo-${noteID}`, 
-      "content": '', 
+    if (response) {
+      setID(response.lastId + 1)
+      const note = {
+        "color":color, 
+        "id": id, 
+        "name": `todo-${id}`, 
+        "content": '', 
+      }
+        setAllNotes(todo => [...todo, note])
+  
+        try {
+          await createTodo(note)
+        } catch(error) {
+          console.log(error)
+        }
     }
-      setAllNotes(todo => [...todo, note])
-
-    try {
-      await createTodo(note)
-    } catch(error) {
-      console.log(error)
+    if (isLoading) {
+      <div>Loading...</div>
     }
-    return { note }
-  }, [createTodo, initialState, noteID])
+  }, [createTodo, id, isLoading, response])
   
 
   if (isLoading) {
@@ -124,16 +98,10 @@ console.log(noteID)
                 key={id}
                 color={note.color || '#ffc973'}
                 id={note.id}
-                // content={content}
-                // setContent={setContent}
-                noteID={noteID}
                 setAllNotes={setAllNotes}
                 allNotes={allNotes}
                 note={note}
-                editTodo={editTodo}
                 newContent={note.content}
-                // saveNote={saveNote}
-                initialState={initialState}
                 response={response}
               />        
           ) 

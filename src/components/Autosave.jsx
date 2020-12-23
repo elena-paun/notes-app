@@ -6,15 +6,16 @@ import _ from 'lodash'
 export const Autosave = ({ debounceMs, dirty }) => {
   const formik = useFormikContext()
   const [isSaved, setIsSaved] = useState(null)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSubmit = useCallback(
     _.debounce(() => {
       return formik.submitForm().then(() => setIsSaved(true))
     }, debounceMs),[])
 
-  useEffect(() =>
-    debouncedSubmit,
-    [debouncedSubmit, formik.values]
+  useEffect(() =>{
+    dirty && debouncedSubmit()
+    return () => dirty && debouncedSubmit()
+  },
+    [debouncedSubmit, dirty, formik.values]
   )
 
   return (

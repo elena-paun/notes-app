@@ -16,7 +16,7 @@ export const useToDos = (id) => {
     //const json = await data.json()
     //console.log(json)
     console.log(data)
-    const lastId = data ? data[data.length - 1].id : 1
+    const lastId = data && data.length ? data[data.length - 1].id : 0
     console.log(lastId)
     return { data, lastId }
   })
@@ -56,23 +56,23 @@ export const useEditTodo = (todoId) => {
     isEditing
   }
 }  
-export const useCreateTodo = (todoId) => {
+export const useCreateTodo = () => {
   const [mutate, {isLoading: isCreating}] = useMutation(
     async (todo) => await axios.post('https://localhost:5001/api/add', todo),
     {
       onSuccess: (response) => {
         console.log(response)
-        const { id, color } = response.data
-        const queryKey = `todo-${todoId}`
-        const cache = queryCache.getQueryData(queryKey)
-        const newTodo = { id, color }
-        console.log(newTodo)
-        const newData = cache.data ? [newTodo, ...cache.data] : [newTodo]
-        queryCache.setQueryData(queryKey, {
-          ...cache,
-          data: newData
-        })
-        return queryCache.setQueryData(queryKey, cache)
+        // const { id, color } = response.data
+        // const queryKey = `todo`
+        // const cache = queryCache.getQueryData(queryKey)
+        // const newTodo = { id, color }
+        // console.log(newTodo)
+        // const newData = cache.data ? [newTodo, ...cache.data] : [newTodo]
+        // queryCache.setQueryData(queryKey, {
+        //   ...cache,
+        //   data: newData
+        // })
+        // return queryCache.setQueryData(queryKey, cache)
         // Query Invalidations
         // queryCache.invalidateQueries('todos')
       //  setText('')

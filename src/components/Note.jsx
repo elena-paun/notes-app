@@ -6,68 +6,41 @@ import { DeleteButton } from './styled-components/DeleteButton.styles'
 import { DeleteModal } from './DeleteModal'
 import { darkenColor } from './utils/darkenColor'
 import { Autosave } from './Autosave';
-import { useEditTodo } from './useFetchTodos'
+import { useEditTodo, useDeleteTodo } from './useFetchTodos'
 
 export const Note = ({ 
   color, 
   id, 
   notes, 
-  sendNote, 
-  handleValue,
   setAllNotes,
-  initialState,
+  newContent,
   allNotes,
-  noteID,
-  response,
-  newContent
 }) => {
-  const [todoID, setID] = useState()
   const [showModal, setShowModal] = useState(false)
-  const [content, setContent] = useState('')
-  const { editTodo } = useEditTodo(todoID)
- 
-  // useEffect(() => {
-  //   if (allNotes) {
-  //     allNotes.map(note => note.content = content)
-  //   }
-  // }, [allNotes, content])
-  // const [note, setNote] = useState(noteSaved)
+  const { editTodo } = useEditTodo(id)
+
    const onDelete = () => {
     setShowModal(true)
   }
-
-  const saveNote = async (e) => {
-    setContent(e.target.value)
-    // if (response) {
-      //const editedNoteID = response.data.map(todo => todo.id)
-      console.log(e)
-      // console.log(id)
-      // response.data.map(async(todo) => {
-        // if (id) {
-          //console.log(editedNoteID)
-        
-          setID(e.target.id)
-          console.log(todoID)
-          const what = allNotes.find(({id}) => id === Number(todoID))
-          console.log(what)
-          // const note={"content": content}
-          console.log(content)
-          console.log(allNotes)
-         try {
-          // if(content)
-          await editTodo({ "content": content })
-         } catch(error) {
-           console.log(error)
-         }
-        // }
-      // })
-    // }
+  const { deleteTodo } = useDeleteTodo(id)
+  const deleteNote = async () => {
+    await deleteTodo(id)
+    setAllNotes(allNotes => allNotes.filter((note) => note.id !== id)) 
+    setShowModal(false)
+  }
+  const saveNote = async (values) => {
+    console.log({id})
+    try {
+      await editTodo({ "content": values.newContent })
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
     <NoteContainer color={color}>
             <Formik
              initialValues={{ newContent }}
-             onSubmit={(e) => saveNote(e)}
+             onSubmit={(e, id) => saveNote(e, id)}
              > 
               {({handleChange, values, onBlur, dirty}) => {
                 return (
@@ -82,7 +55,7 @@ export const Note = ({
                         onChange={handleChange}
                         onBlur={onBlur}
                       />
-                    {dirty && <Autosave debounceMs={1000} dirty={dirty} />}
+                    <Autosave debounceMs={1000} dirty={dirty} />
                     </>
                   </Form>
                 )
@@ -97,6 +70,8 @@ export const Note = ({
           id={id}
           notes={notes}
           setAllNotes={setAllNotes}
+          allNotes={allNotes}
+          deleteNote={deleteNote}
         />}
       </NoteContainer>
   )
