@@ -15,9 +15,9 @@ export const Note = ({
   setAllNotes,
   newContent,
   allNotes,
+  saveNote,
 }) => {
   const [showModal, setShowModal] = useState(false)
-  const { editTodo } = useEditTodo(id)
 
    const onDelete = () => {
     setShowModal(true)
@@ -28,19 +28,12 @@ export const Note = ({
     setAllNotes(allNotes => allNotes.filter((note) => note.id !== id)) 
     setShowModal(false)
   }
-  const saveNote = async (values) => {
-    console.log({id})
-    try {
-      await editTodo({ "content": values.newContent })
-    } catch (error) {
-      console.log(error)
-    }
-  }
+ 
   return (
     <NoteContainer color={color}>
             <Formik
              initialValues={{ newContent }}
-             onSubmit={(e, id) => saveNote(e, id)}
+             onSubmit={(values) => saveNote(values)}
              > 
               {({handleChange, values, onBlur, dirty}) => {
                 return (

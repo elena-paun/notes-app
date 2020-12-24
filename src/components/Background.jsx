@@ -14,6 +14,7 @@ export const Background = () => {
    const [allNotes, setAllNotes] = useState([])
    const [id, setID] = useState()
   const { createTodo } = useCreateTodo()
+  const { editTodo } = useEditTodo(id)
 
   useEffect(() => {
  
@@ -28,7 +29,14 @@ export const Background = () => {
     setShowColors(!showColors)
     setStartColors(true)
   }, [showColors])
-
+  const saveNote = async (values) => {
+    console.log({id})
+    try {
+      await editTodo({ "content": values.newContent })
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const createNote = useCallback(async (color) => {
     if (response) {
       setID(response.lastId + 1)
@@ -103,6 +111,7 @@ export const Background = () => {
                 note={note}
                 newContent={note.content}
                 response={response}
+                saveNote={saveNote}
               />        
           ) 
         ): null}
