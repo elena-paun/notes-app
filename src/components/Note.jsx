@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Formik, Form } from 'formik';
 import { TextArea, NoteContainer } from './styled-components/Note.styles'
-import { EditButton } from './styled-components/EditButton.styles'
 import { DeleteButton } from './styled-components/DeleteButton.styles'
 import { DeleteModal } from './DeleteModal'
 import { darkenColor } from './utils/darkenColor'
@@ -12,47 +11,50 @@ export const Note = ({
   color, 
   id, 
   notes, 
-  setAllNotes,
-  newContent,
-  allNotes,
-  saveNote,
+  content,
 }) => {
+  const { editTodo } = useEditTodo(id)
   const [showModal, setShowModal] = useState(false)
 
    const onDelete = () => {
     setShowModal(true)
   }
   const { deleteTodo } = useDeleteTodo(id)
+
   const deleteNote = async () => {
     await deleteTodo(id)
-    setAllNotes(allNotes => allNotes.filter((note) => note.id !== id)) 
     setShowModal(false)
   }
- 
+  const saveNote = async (values) => {
+    try {
+      await editTodo({ "content": values.content, "id": id })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
   return (
     <NoteContainer color={color}>
             <Formik
-             initialValues={{ newContent }}
+             enableReinitialize
+             initialValues={{ content }}
              onSubmit={(values) => saveNote(values)}
              > 
-              {({handleChange, values, onBlur, dirty}) => {
-                return (
-                  <Form >
-                    <>
-                      <TextArea 
-                        id={id}
-                        value={values.newContent}
-                        color={color} 
-                        placeholder='Write something here...' 
-                        name='newContent'
-                        onChange={handleChange}
-                        onBlur={onBlur}
-                      />
-                    <Autosave debounceMs={1000} dirty={dirty} />
-                    </>
+              {({ handleChange, values, onBlur, dirty, submitForm, isSubmitting }) => (
+                  <Form>
+                    <TextArea 
+                      id={id}
+                      value={values.content}
+                      color={color} 
+                      placeholder='Write something here...' 
+                      name='content'
+                      onChange={handleChange}
+                      onBlur={onBlur}
+                    />
+                    <Autosave debounceMs={1000} dirty={dirty} submitForm={submitForm} values={values} isSubmitting={isSubmitting} />
                   </Form>
                 )
-              }} 
+              } 
             </Formik>
         {/* <EditButton style={() => darkenColor(color, -50)}/> */}
         <DeleteButton onClick={onDelete} style={() => darkenColor(color, -50)}/>
@@ -62,8 +64,6 @@ export const Note = ({
           setShowModal={setShowModal}
           id={id}
           notes={notes}
-          setAllNotes={setAllNotes}
-          allNotes={allNotes}
           deleteNote={deleteNote}
         />}
       </NoteContainer>

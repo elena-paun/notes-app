@@ -1,11 +1,7 @@
-import React from 'react'
 import axios from 'axios'
 import { useQuery, useMutation, queryCache } from 'react-query'
-import api from './skeleton'
-import get from 'lodash/get';
 
-export const useToDos = (id) => {
- // const { id } = payload
+export const useToDos = () => {
   const { isLoading, error, data: response } = useQuery('todos', async () => {
       const options = {
         headers: {
@@ -13,41 +9,20 @@ export const useToDos = (id) => {
         }
       };
     const { data } = await axios.get(`https://localhost:5001/api/getAll`, options)
-    //const json = await data.json()
-    //console.log(json)
-    console.log(data)
-    const lastId = data && data.length ? data[data.length - 1].id : 0
-    console.log(lastId)
-    return { data, lastId }
+    return { data }
   })
   return ({
     response,
-    // lastId: get(response, 'data.lastId') ? response.data.lastId : [],
     isLoading
   })
 } 
 
-export const useEditTodo = (todoId) => {
+export const useEditTodo = (id) => {
   const [mutate, {isLoading: isEditing}] = useMutation(
-    async (data) => axios.patch(`https://localhost:5001/api/edit/${todoId}`, data),
+    async (data) => axios.patch(`https://localhost:5001/api/edit/${id}`, data),
     {
       onSuccess: (response) => {
         console.log(response)
-        // console.log(response)
-        // const { id, content } = response.data
-        // console.log(id)
-        // const queryKey = `todo-${todoId}`
-        // const cache = queryCache.getQueryData(queryKey)
-        // console.log(cache)
-        // const newTodo = { id, content }
-        // const newData = cache.data ? [newTodo, ...cache.data] : [newTodo]
-        // queryCache.setQueryData(queryKey, {
-        //   ...cache,
-        //   data: newData
-        // })
-        // Query Invalidations
-        // queryCache.invalidateQueries('todos')
-      //  setText('')
       },
     }
   )
@@ -61,21 +36,7 @@ export const useCreateTodo = () => {
     async (todo) => await axios.post('https://localhost:5001/api/add', todo),
     {
       onSuccess: (response) => {
-        console.log(response)
-        // const { id, color } = response.data
-        // const queryKey = `todo`
-        // const cache = queryCache.getQueryData(queryKey)
-        // const newTodo = { id, color }
-        // console.log(newTodo)
-        // const newData = cache.data ? [newTodo, ...cache.data] : [newTodo]
-        // queryCache.setQueryData(queryKey, {
-        //   ...cache,
-        //   data: newData
-        // })
-        // return queryCache.setQueryData(queryKey, cache)
-        // Query Invalidations
-        // queryCache.invalidateQueries('todos')
-      //  setText('')
+        queryCache.refetchQueries('todos')
       },
     }
   )
@@ -84,19 +45,13 @@ export const useCreateTodo = () => {
     isCreating
   }
 }
-// const getIds = (data) => {
-//   const mapIds = data.map((todo) => {
-//     const { editTodo } = useEditTodo(todo.id)
-//     return editTodo
-//   })
-//   console.log(mapIds)
-// }
+
 export const useDeleteTodo = (id) => {
   const [mutate, { error, isLoading: isDeleting }] = useMutation(
     async () => await axios.delete(`https://localhost:5001/api/delete/${id}`),
      {
        onSuccess: response => {
-         console.log(response)
+         queryCache.refetchQueries('todos')
        }
      }
   )

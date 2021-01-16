@@ -1,84 +1,54 @@
-import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { useState, useCallback } from 'react'
 import colors from './utils/colors'
 import { StyledBackground, Todo, Container, AppBar } from './styled-components/Background.styles'
-import { AddNote } from './styled-components/AddNoteButton.styles.'
+import { AddNote } from './styled-components/AddNoteButton.styles'
 import { StyledThemeColor, ColorContainer } from './styled-components/ThemeColors.styles'
 import { Note } from './Note'
-import { useToDos, useCreateTodo, useEditTodo } from './useFetchTodos'
+import { useToDos, useCreateTodo } from './useFetchTodos'
 export const Background = () => {
   
   const { response, isLoading } = useToDos()
   const [wobble, setWobble] = useState(0)
   const [showColors, setShowColors] = useState(false)
   const [startColors, setStartColors] = useState(false);
-   const [allNotes, setAllNotes] = useState([])
-   const [id, setID] = useState()
   const { createTodo } = useCreateTodo()
-  const { editTodo } = useEditTodo(id)
-
-  useEffect(() => {
  
-    if (response) {
-      console.log(response.data)
-      setAllNotes(response.data)
-    }
-  }, [response])
  
   const onClick = useCallback(() => {
     setWobble(1)
     setShowColors(!showColors)
     setStartColors(true)
   }, [showColors])
-  const saveNote = async (values) => {
-    console.log({id})
-    try {
-      await editTodo({ "content": values.newContent })
-    } catch (error) {
-      console.log(error)
-    }
-  }
+
   const createNote = useCallback(async (color) => {
-    if (response) {
-      setID(response.lastId + 1)
       const note = {
-        "color":color, 
-        "id": id, 
-        "name": `todo-${id}`, 
+        "color": color, 
         "content": '', 
       }
-        setAllNotes(todo => [...todo, note])
-  
         try {
           await createTodo(note)
         } catch(error) {
           console.log(error)
         }
-    }
     if (isLoading) {
       <div>Loading...</div>
     }
-  }, [createTodo, id, isLoading, response])
+  }, [createTodo, isLoading])
   
 
-  if (isLoading) {
+  if (isLoading || !response) {
     return (
       <div>Loading...</div>
     )
   }
-  if(!response) {
-    return null;
-  }
-  
-
   return (
-    <Container id='container'>
-      <AppBar id='appbar'>
-        <Todo id='todo'>
+    <Container>
+      <AppBar>
+        <Todo>
           Todo
         </Todo>
         <AddNote
-          className='image rotate'
-          rotate='rotate'
+          className='image'
           onClick={onClick}
           wobble={wobble}
           onAnimationEnd={() => {
@@ -101,20 +71,17 @@ export const Background = () => {
             </ColorContainer>
       </AppBar>
       <StyledBackground>
-        {allNotes.length ? allNotes?.map((note, id) => (
+        {response?.data.map((note, id) => (
              <Note
                 key={id}
-                color={note.color || '#ffc973'}
+                color={note.color}
                 id={note.id}
-                setAllNotes={setAllNotes}
-                allNotes={allNotes}
                 note={note}
-                newContent={note.content}
+                content={note.content}
                 response={response}
-                saveNote={saveNote}
               />        
           ) 
-        ): null}
+        )}
         </StyledBackground>
     </Container>
     )
