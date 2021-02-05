@@ -3,25 +3,29 @@ import styled from 'styled-components'
 import { useFormikContext } from 'formik'
 import _ from 'lodash'
 
-export const Autosave = ({ debounceMs, dirty, submitForm, isSubmitting }) => {
+export const Autosave = () => {
   const formik = useFormikContext()
   const [isSaved, setIsSaved] = useState(null)
+  const [message, setMessage] = useState('')
   const debouncedSubmit = useCallback(
     _.debounce(() => {
-      return formik.submitForm().then(() => setIsSaved(true))
-    }, debounceMs),[])
-
+      return formik.submitForm().then(() => {
+        setIsSaved(true)
+        setMessage('Your changes are saved.')
+      })
+    }, 1000),[])
   useEffect(() => {
-    dirty && debouncedSubmit()
-  }, [debouncedSubmit, dirty])
-
+    formik.dirty && debouncedSubmit()
+  }, [debouncedSubmit, formik.dirty])
+  console.log(formik.dirty)
+  useEffect(() =>  _.debounce(() => formik.dirty === false && setMessage(''), 4000), [formik.dirty])
   return (
     <ChangesSaved>
       {
-        !!isSubmitting
+        !!formik.isSubmitting  
           ? 'Saving...'
           : isSaved
-            ? 'Your changes saved.'
+            ? message
             :null
       }
     </ChangesSaved>
@@ -29,6 +33,6 @@ export const Autosave = ({ debounceMs, dirty, submitForm, isSubmitting }) => {
 }
 
 const ChangesSaved = styled.div`
-  font-family: Century Gothic;
-  font-size: 12px;
+  font-family: 'Sofia';
+  font-size: 15px;
 `

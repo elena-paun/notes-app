@@ -14,18 +14,22 @@ export const AppBar = styled.div`
   border-radius: 30px 0 0 30px;
   border-right: 0.5px solid #e6eaf6;
 `
-export const StyledBackground = styled.div`
+export const Notes = styled.div`
+  display: flex;
+  flex-direction: column;
   padding: 15px;
   position: relative;
   background-color: white;
   background-size: cover;
-  height: 670px;
   width: 85%;
   border-radius: 0 30px 30px 0;
+  text-align: center;
 `
+export const StyledBackground = styled.div`
+`
+
 export const Todo = styled.div`
-  font-family: 'Century Gothic';
-  font-size: 14px;
+  font-family: Sofia;
   font-weight: bold;
   margin-top: 30px;
 `

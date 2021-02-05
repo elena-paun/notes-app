@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Formik, Form } from 'formik';
-import { TextArea, NoteContainer } from './styled-components/Note.styles'
+import { TextArea, StyledNote } from './styled-components/Note.styles'
 import { DeleteButton } from './styled-components/DeleteButton.styles'
 import { DeleteModal } from './DeleteModal'
 import { darkenColor } from './utils/darkenColor'
 import { Autosave } from './Autosave';
-import { useEditTodo, useDeleteTodo } from './useFetchTodos'
+import { useEditTodo, useDeleteTodo } from './api/useFetchTodos'
 
 export const Note = ({ 
   color, 
@@ -34,39 +34,39 @@ export const Note = ({
   }
   
   return (
-    <NoteContainer color={color}>
+    <StyledNote color={color}>
             <Formik
              enableReinitialize
              initialValues={{ content }}
              onSubmit={(values) => saveNote(values)}
              > 
-              {({ handleChange, values, onBlur, dirty, submitForm, isSubmitting }) => (
+              {({ handleChange, values }) => (
                   <Form>
-                    <TextArea 
+                    <TextArea
                       id={id}
+                      as="textarea"
+                      rows="4"
                       value={values.content}
                       color={color} 
                       placeholder='Write something here...' 
                       name='content'
                       onChange={handleChange}
-                      onBlur={onBlur}
                     />
-                    <Autosave debounceMs={1000} dirty={dirty} submitForm={submitForm} values={values} isSubmitting={isSubmitting} />
+                    <Autosave />
                   </Form>
                 )
               } 
             </Formik>
-        {/* <EditButton style={() => darkenColor(color, -50)}/> */}
         <DeleteButton onClick={onDelete} style={() => darkenColor(color, -50)}/>
-      {showModal &&
-        <DeleteModal
-          color={color}
-          setShowModal={setShowModal}
-          id={id}
-          notes={notes}
-          deleteNote={deleteNote}
-        />}
-      </NoteContainer>
+        {showModal &&
+          <DeleteModal
+            color={color}
+            setShowModal={setShowModal}
+            id={id}
+            notes={notes}
+            deleteNote={deleteNote}
+          />}
+      </StyledNote>
   )
 }
 

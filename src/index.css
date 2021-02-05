@@ -1,12 +1,15 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Sofia', cursive;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%;
-  padding: 100px;
+  padding: 30px;
   animation: color-change-5x 8s linear infinite alternate both;
+}
+@media only screen and (max-width: 570px) {
+  body {
+    padding: 10px;
+  }
 }
 @keyframes color-change-5x {
   0% {

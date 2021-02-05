@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useQuery, useMutation, queryCache } from 'react-query'
-
 export const useToDos = () => {
   const { isLoading, error, data: response } = useQuery('todos', async () => {
       const options = {
@@ -8,8 +7,10 @@ export const useToDos = () => {
           'Access-Control-Allow-Origin': '*'
         }
       };
+      
     const { data } = await axios.get(`https://localhost:5001/api/getAll`, options)
-    return { data }
+    const rev = data.reverse()
+    return { rev }
   })
   return ({
     response,
@@ -23,6 +24,7 @@ export const useEditTodo = (id) => {
     {
       onSuccess: (response) => {
         console.log(response)
+        queryCache.refetchQueries('todos');
       },
     }
   )
@@ -31,12 +33,15 @@ export const useEditTodo = (id) => {
     isEditing
   }
 }  
+
 export const useCreateTodo = () => {
   const [mutate, {isLoading: isCreating}] = useMutation(
     async (todo) => await axios.post('https://localhost:5001/api/add', todo),
     {
       onSuccess: (response) => {
+        console.log(response)
         queryCache.refetchQueries('todos')
+
       },
     }
   )
@@ -52,11 +57,15 @@ export const useDeleteTodo = (id) => {
      {
        onSuccess: response => {
          queryCache.refetchQueries('todos')
-       }
+       },
+      onError: error => {
+        console.log(error)
+      }
      }
   )
   return {
     deleteTodo: mutate,
-    isDeleting
+    isDeleting,
+    error
   }
 }

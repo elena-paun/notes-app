@@ -3,7 +3,7 @@ import { HiCheckCircle } from 'react-icons/hi'
 import { HiOutlineXCircle } from 'react-icons/hi'
 
 export const Text = styled.div`
-  font-family: Century Gothic;
+  font-family: Sofia;
   font-weight: bold;
   color: ${props => props.style};
   margin-top: 40px;
@@ -37,7 +37,7 @@ export const CheckButton = styled(HiCheckCircle)`
   margin-right: 50px;
 `
 export const Delete = styled.div`
-    position: relative;
+    position: absolute;
     width: 180px;
     height: 180px;
     background: white;
@@ -47,6 +47,6 @@ export const Delete = styled.div`
     padding: 30px;
     border-radius: 20px;
     align-items: center;
-    top: -54%;
-    left: 50%;
+    margin-left: 90px;
+    margin-top: -50px;
 `

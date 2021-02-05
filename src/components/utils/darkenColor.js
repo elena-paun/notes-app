@@ -1,5 +1,3 @@
-/* eslint-disable no-mixed-operators */
-
 export const darkenColor = (color, percent) => {
   	const num = parseInt(color.replace('#', ''),16),
 		amt = Math.round(2.55 * percent),

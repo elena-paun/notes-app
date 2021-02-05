@@ -1,18 +1,23 @@
+import { Field } from 'formik';
 import styled from 'styled-components';
-import { Field } from 'formik'
-export const TextArea = styled(Field)`
-  background-color: ${props => props.color};
-  height: 180px;
-  width: 180px;
+export const TextArea = styled(Field)` 
+  font-family: Sofia;
+  font-size: 20px;
+  background-color: transparent;
+  width: 160px;
   outline: none;
   border: none;
   resize: none;
   &::placeholder {
     font-style: oblique;
+    font-family: Sofia;
   }
 `
-
 export const NoteContainer = styled.div`
+  position: relative;
+`
+export const StyledNote = styled.div`
+   position: relative;
    margin: 20px;
    float: left;
    background-color: ${props => props.color};
